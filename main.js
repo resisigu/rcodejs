@@ -1,4 +1,4 @@
-function initCodeViewer() {
+(function(){
   function saveToCache(code, url, title) {
     let cache = JSON.parse(localStorage.getItem('codeViewerCache') || '[]');
     cache.unshift({url: url, code: code, title: title, timestamp: Date.now()});
@@ -38,7 +38,7 @@ function initCodeViewer() {
             }
             .line-numbers {
               counter-reset: line;
-              padding: 0 16px;
+              padding: 1.5em 16px 0;
               text-align: right;
               user-select: none;
               flex-shrink: 0;
@@ -54,7 +54,7 @@ function initCodeViewer() {
             }
             pre {
               margin: 0;
-              padding: 0 0 20px;
+              padding: 1.5em 0 20px;
             }
             code {
               display: block;
@@ -110,7 +110,15 @@ function initCodeViewer() {
               cursor: pointer;
               margin-top: 10px;
             }
-            .developer-link {
+            #download-btn {
+              background: #0066cc;
+              color: white;
+              border: none;
+              padding: 5px 10px;
+              cursor: pointer;
+              margin-top: 10px;
+            }
+            .developer-link, .rcodejs-link {
               display: block;
               margin-top: 10px;
               color: #0066cc;
@@ -146,7 +154,10 @@ function initCodeViewer() {
                   <a href="#" onclick="loadCode(\${index})">\${item.title || item.url}</a>
                   <span class="delete-btn" onclick="deleteItem(\${index})">×</span>
                 </div>\`
-              ).join('') + '<button id="clear-all" onclick="clearAll()">全ての履歴を削除</button>' +
+              ).join('') + 
+              '<button id="clear-all" onclick="clearAll()">全ての履歴を削除</button>' +
+              '<button id="download-btn" onclick="downloadCode()">コードをダウンロード</button>' +
+              '<a href="https://resisigu.42web.io/rcodejs/" class="rcodejs-link" target="_blank">RcodeJSのサイトを確認</a>' +
               '<a href="https://resisigu.42web.io/" class="developer-link" target="_blank">開発者：resisigu</a>';
             }
 
@@ -173,6 +184,15 @@ function initCodeViewer() {
               }
             }
 
+            function downloadCode() {
+              const code = document.querySelector('code').innerText;
+              const blob = new Blob([code], {type: 'text/plain'});
+              const a = document.createElement('a');
+              a.href = URL.createObjectURL(blob);
+              a.download = 'source_code.txt';
+              a.click();
+            }
+
             createMenu();
           </script>
         </body>
@@ -186,4 +206,4 @@ function initCodeViewer() {
   var url = window.location.href;
   var title = document.title;
   displaySourceCode(sourceCode, url, title);
-}
+})();
